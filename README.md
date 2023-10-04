@@ -1,20 +1,35 @@
 # Go OIDC Auth proxy
 
-This serves as an OIDC auth proxy mostly to simulate authentication layer currently used for serverless applications.
-Most of providers allow you to seemlesly integrate into SSO authentication. Using this approach all you get are headers
-generated using claims.
+## Overview
+It's designed to simulate the authentication layer commonly used for serverless applications.
+This proxy allows applications to use OpenID Connect (OIDC) infront of any service. Once authenticated,
+the proxy provides the backend services with user claims in the form of X-Claims headers.
+
+This project was born out of experimentation with Azure Container Apps. The goal was to mock
+Azure's authentication logic and provide a flexible and robust authentication solution for serverless applications.
 
 
+## Configuration
 
-## Usage
+Set environment variables:
 
-Run the server.
+* *GOAP_CLIENT_ID*: OIDC provider client ID
+* *GOAP_CLIENT_SECRET*: OIDC provider client secret
+* *GOAP_ISSUER: OIDC* issuer
+* *GOAP_REDIRECT_URL*: Redirect URL for OIDC
 
-## Custom templates
+## Running
+1. Using Docker
 
-Add custom templates and regenerate.
+```bash
+docker run -p 8080:8080 ghcr.io/alesbrelih/go-oidc-auth-proxy:latest
+```
 
-## Contributing
+2. Install CMD
+
+```bash
+go install github.com/alesbrelih/go-oidc-auth-proxy/cmd/go-oidc-auth-proxy
+```
 
 ### Prerequisites
 
