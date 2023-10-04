@@ -1,0 +1,14 @@
+{
+    "auth_typ": "{{.AuthType}}",
+    "claims": [
+      {{- $first := true -}}
+      {{- range $key, $value := .Claims }}
+        {{- if not $first }},{{ end }}
+        {
+            "typ": "{{ $key }}",
+            "val": "{{ $value | json }}"
+        }
+        {{- $first = false -}}
+      {{- end }}
+    ]
+}

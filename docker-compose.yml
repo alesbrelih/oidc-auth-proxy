@@ -1,0 +1,55 @@
+---
+version: '3.7'
+
+services:
+
+  proxy:
+    container_name: goap_proxy
+    image: nginx:1.25.2-alpine
+    volumes:
+      - ./dev/nginx/nginx_default.conf:/etc/nginx/conf.d/default.conf:cached
+    ports:
+      - 127.0.0.1:80:80
+
+  keycloak:
+    container_name: goap_oidc_provider
+    image: quay.io/keycloak/keycloak:22.0.3
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    volumes:
+      - ./dev/keycloak:/opt/keycloak/data/import
+    command: ["start-dev", "--import-realm"]
+    expose:
+      - 8080
+    ports:
+      - 8080:8080
+
+  oidc_auth_proxy:
+    container_name: goap_auth
+    build:
+      target: builder
+    env_file:
+      - '.env'
+      - '.env-secret'
+    command: make run/go-oidc-auth-proxy
+    expose:
+      - 8080
+    volumes:
+      - ./:/app:cached
+    working_dir: /app
+    depends_on:
+      - keycloak
+
+  example_service:
+    container_name: goap_example-service
+    build:
+      target: builder
+    command: make run/example-service
+    expose:
+      - 8080
+    volumes:
+      - ./:/app:cached
+    working_dir: /app
+    depends_on:
+      - keycloak

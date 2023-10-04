@@ -1,0 +1,111 @@
+openapi: 3.0.0
+info:
+  title: Go OIDC auth proxy
+  description: Go OIDC auth proxy reference.
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8080'
+paths:
+  /oidc/auth:
+    get:
+      summary: Checks authentication status of currently logged in user (using cookie).
+      description: This endpoint is used with NGINX.
+      parameters:
+        - name: _go_oidc_auth_proxy
+          in: cookie
+          description: Session cookie for authentication
+          schema:
+            type: string
+      responses:
+        '202':
+          description: Returns 202 if ok.
+          headers:
+            X-Claims:
+              description: 
+              schema:
+                type: string
+        '401':
+          description: Unauthorized
+        'default':
+          description: Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+  /oidc/sign-in:
+    get:
+      summary: Signs in.
+      description: Sigs in.
+      responses:
+        '302':
+          description: Redirect URL for provider
+          headers:
+            Set-Cookie:
+              description: State and nonce cookies
+              schema:
+                type: array
+                items:
+                  type: string
+            Location:
+              description: Redirect URL
+              schema:
+                type: string
+        'default':
+          description: Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+  /oidc/callback:
+    get:
+      summary: Authorization code flow callback.
+      description: Checks authorization code with registered provider and saves it to session.
+      parameters:
+        - name: _go_oidc_auth_proxy_nounce
+          in: cookie
+          description: Nonce for the request
+          schema:
+            type: string
+        - name: _go_oidc_auth_proxy_state
+          in: cookie
+          description: State parameter for the request
+          schema:
+            type: string
+        - name: state
+          in: query
+          description: State parameter for the request
+          schema:
+            type: string
+        - name: code
+          in: query
+          description: Code parameter for the request
+          schema:
+            type: string
+      responses:
+        '302':
+          description: Successfull login
+          headers:
+            Set-Cookie:
+              description: Session Cookie
+              schema:
+                type: string
+            Location:
+              description: Redirect URL
+              schema:
+                type: string
+        'default':
+          description: Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
