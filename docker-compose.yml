@@ -32,7 +32,7 @@ services:
     env_file:
       - '.env'
       - '.env-secret'
-    command: make run/go-oidc-auth-proxy
+    command: make run/oidc-auth-proxy
     expose:
       - 8080
     volumes:

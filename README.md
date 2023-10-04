@@ -25,13 +25,13 @@ Set environment variables:
 1. Using Docker
 
 ```bash
-docker run -p 8080:8080 ghcr.io/alesbrelih/go-oidc-auth-proxy:latest
+docker run -p 8080:8080 ghcr.io/alesbrelih/oidc-auth-proxy:latest
 ```
 
 or install CMD
 
 ```bash
-go install github.com/alesbrelih/go-oidc-auth-proxy/cmd/go-oidc-auth-proxy
+go install github.com/alesbrelih/oidc-auth-proxy/cmd/oidc-auth-proxy
 ```
 
 2. NGINX configuration example:

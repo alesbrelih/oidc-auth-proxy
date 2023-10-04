@@ -5,10 +5,10 @@ import (
 	"log/slog"
 	"net/http"
 
-	gooidcproxy "github.com/alesbrelih/go-oidc-auth-proxy"
-	"github.com/alesbrelih/go-oidc-auth-proxy/internal/config"
-	"github.com/alesbrelih/go-oidc-auth-proxy/internal/generated/oidc/api"
-	"github.com/alesbrelih/go-oidc-auth-proxy/internal/strings"
+	gooidcproxy "github.com/alesbrelih/oidc-auth-proxy"
+	"github.com/alesbrelih/oidc-auth-proxy/internal/config"
+	"github.com/alesbrelih/oidc-auth-proxy/internal/generated/oidc/api"
+	"github.com/alesbrelih/oidc-auth-proxy/internal/strings"
 	"github.com/coreos/go-oidc/v3/oidc"
 	"golang.org/x/oauth2"
 )

@@ -10,11 +10,11 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/alesbrelih/go-oidc-auth-proxy/cmd/go-oidc-auth-proxy/handler"
-	"github.com/alesbrelih/go-oidc-auth-proxy/internal/config"
-	"github.com/alesbrelih/go-oidc-auth-proxy/internal/generated/oidc/api"
-	oidcPkg "github.com/alesbrelih/go-oidc-auth-proxy/internal/oidc"
-	"github.com/alesbrelih/go-oidc-auth-proxy/internal/transform"
+	"github.com/alesbrelih/oidc-auth-proxy/cmd/oidc-auth-proxy/handler"
+	"github.com/alesbrelih/oidc-auth-proxy/internal/config"
+	"github.com/alesbrelih/oidc-auth-proxy/internal/generated/oidc/api"
+	oidcPkg "github.com/alesbrelih/oidc-auth-proxy/internal/oidc"
+	"github.com/alesbrelih/oidc-auth-proxy/internal/transform"
 	_ "github.com/hashicorp/cap"
 )
 

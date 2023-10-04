@@ -5,11 +5,11 @@ import (
 	"net/http"
 	"time"
 
-	gooidcproxy "github.com/alesbrelih/go-oidc-auth-proxy"
-	"github.com/alesbrelih/go-oidc-auth-proxy/internal/generated/oidc/api"
-	oidcPkg "github.com/alesbrelih/go-oidc-auth-proxy/internal/oidc"
-	stringsPkg "github.com/alesbrelih/go-oidc-auth-proxy/internal/strings"
-	"github.com/alesbrelih/go-oidc-auth-proxy/internal/transform"
+	gooidcproxy "github.com/alesbrelih/oidc-auth-proxy"
+	"github.com/alesbrelih/oidc-auth-proxy/internal/generated/oidc/api"
+	oidcPkg "github.com/alesbrelih/oidc-auth-proxy/internal/oidc"
+	stringsPkg "github.com/alesbrelih/oidc-auth-proxy/internal/strings"
+	"github.com/alesbrelih/oidc-auth-proxy/internal/transform"
 )
 
 const (

@@ -1,4 +1,4 @@
-module github.com/alesbrelih/go-oidc-auth-proxy
+module github.com/alesbrelih/oidc-auth-proxy
 
 go 1.21.1
 

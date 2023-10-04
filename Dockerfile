@@ -6,13 +6,13 @@ WORKDIR /app
 
 COPY ./ .
 
-RUN make build/go-oidc-auth-proxy
+RUN make build/oidc-auth-proxy
 
 FROM gcr.io/distroless/base AS deployable
 USER 65534:65534
 
 WORKDIR /app
 
-COPY --chown=65534:65534 --from=deployer /app/bin/go-oidc-auth-proxy /app/service
+COPY --chown=65534:65534 --from=deployer /app/bin/oidc-auth-proxy /app/service
 
 ENTRYPOINT ["/app/service"]
