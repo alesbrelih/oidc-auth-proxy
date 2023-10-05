@@ -2,12 +2,12 @@ package oidc
 
 import (
 	"context"
-	"log/slog"
-	"net/http"
+	"errors"
+	"fmt"
 
 	gooidcproxy "github.com/alesbrelih/oidc-auth-proxy"
 	"github.com/alesbrelih/oidc-auth-proxy/internal/config"
-	"github.com/alesbrelih/oidc-auth-proxy/internal/generated/oidc/api"
+	"github.com/alesbrelih/oidc-auth-proxy/internal/packageerrors"
 	"github.com/alesbrelih/oidc-auth-proxy/internal/strings"
 	"github.com/coreos/go-oidc/v3/oidc"
 	"golang.org/x/oauth2"
@@ -20,7 +20,7 @@ type SignInRequest struct {
 }
 
 type OIDC interface {
-	SignIn() (SignInRequest, error)
+	SignIn() SignInRequest
 	RefreshAccessToken(ctx context.Context, token gooidcproxy.Tokens) (gooidcproxy.Tokens, error)
 	Exchange(ctx context.Context, code string) (gooidcproxy.Tokens, error)
 }
@@ -56,7 +56,7 @@ type service struct {
 	verifier     *oidc.IDTokenVerifier
 }
 
-func (s *service) SignIn() (SignInRequest, error) {
+func (s *service) SignIn() SignInRequest {
 	state := strings.Random()
 	nonce := strings.Random()
 	authURL := s.oauth2Config.AuthCodeURL(state, oidc.Nonce(nonce))
@@ -65,7 +65,7 @@ func (s *service) SignIn() (SignInRequest, error) {
 		Location: authURL,
 		State:    state,
 		Nonce:    nonce,
-	}, nil
+	}
 }
 
 func (s *service) RefreshAccessToken(ctx context.Context, token gooidcproxy.Tokens) (gooidcproxy.Tokens, error) {
@@ -85,29 +85,23 @@ func (s *service) RefreshAccessToken(ctx context.Context, token gooidcproxy.Toke
 func (s *service) Exchange(ctx context.Context, code string) (gooidcproxy.Tokens, error) {
 	oauth2Token, err := s.oauth2Config.Exchange(ctx, code)
 	if err != nil {
-		slog.Error("can't exchange the code secret: %s", err)
-
-		return gooidcproxy.Tokens{}, &api.ErrRespStatusCode{
-			StatusCode: http.StatusInternalServerError,
-		}
+		return gooidcproxy.Tokens{},
+			packageerrors.ErrInternal.
+				WithErr(fmt.Errorf("can't exchange the code secret: %w", err))
 	}
 
 	rawIDToken, ok := oauth2Token.Extra("id_token").(string)
 	if !ok {
-		slog.Error("no ID token")
-
-		return gooidcproxy.Tokens{}, &api.ErrRespStatusCode{
-			StatusCode: http.StatusInternalServerError,
-		}
+		return gooidcproxy.Tokens{},
+			packageerrors.ErrInternal.
+				WithErr(errors.New("no ID token"))
 	}
 
 	idToken, err := s.verifier.Verify(ctx, rawIDToken)
 	if err != nil {
-		slog.Error("can't verify id token: %s", err)
-
-		return gooidcproxy.Tokens{}, &api.ErrRespStatusCode{
-			StatusCode: http.StatusInternalServerError,
-		}
+		return gooidcproxy.Tokens{},
+			packageerrors.ErrInternal.
+				WithErr(fmt.Errorf("can't verify id token: %s", err))
 	}
 
 	return gooidcproxy.Tokens{

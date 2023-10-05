@@ -3,13 +3,14 @@ package transform
 import (
 	"testing"
 
+	"github.com/alesbrelih/oidc-auth-proxy/internal/config"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestNew(t *testing.T) {
 	t.Parallel()
 
-	s, err := New(DefaultTemplate)
+	s, err := New(config.Config{})
 	assert.NoError(t, err)
 
 	jwt := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"

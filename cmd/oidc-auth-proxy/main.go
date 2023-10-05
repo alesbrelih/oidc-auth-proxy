@@ -15,7 +15,6 @@ import (
 	"github.com/alesbrelih/oidc-auth-proxy/internal/generated/oidc/api"
 	oidcPkg "github.com/alesbrelih/oidc-auth-proxy/internal/oidc"
 	"github.com/alesbrelih/oidc-auth-proxy/internal/transform"
-	_ "github.com/hashicorp/cap"
 )
 
 func main() {
@@ -32,12 +31,10 @@ func main() {
 		log.Fatalf("cloud not initialize OIDC provider: %s", err)
 	}
 
-	t, err := transform.New(transform.DefaultTemplate)
+	t, err := transform.New(cfg)
 	if err != nil {
 		log.Fatalf("could not create HTTP header value transformer: %s", err)
 	}
-
-	log.Printf("cfg: %+v", cfg)
 
 	handler, err := api.NewServer(handler.New(oidcSvc, t))
 	if err != nil {
@@ -52,7 +49,7 @@ func main() {
 	osSignal := make(chan os.Signal, 1)
 	signal.Notify(osSignal, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 
-	log.Printf("Server started @%d", cfg.Port)
+	log.Printf("Server started @ %d", cfg.Port)
 
 	go func() {
 		if err = srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {

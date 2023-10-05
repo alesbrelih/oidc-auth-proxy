@@ -12,14 +12,19 @@ This service needs was meant to be run with _ngx_http_auth_request_module_ (exam
 
 Important: This is not meant for production.
 
+Tested with:
+
+* Keycloak
+
 ## Configuration
 
 Set environment variables:
 
-* *GOAP_CLIENT_ID*: OIDC provider client ID
-* *GOAP_CLIENT_SECRET*: OIDC provider client secret
-* *GOAP_ISSUER: OIDC* issuer
-* *GOAP_REDIRECT_URL*: Redirect URL for OIDC
+* **GOAP_CLIENT_ID**: OIDC provider client ID
+* **GOAP_CLIENT_SECRET**: OIDC provider client secret
+* **GOAP_ISSUER: OIDC** issuer
+* **GOAP_REDIRECT_URL**: Redirect URL for OIDC
+* **GOAP_CUSTOM_TEMPLATE_PATH**: Custom template path.
 
 ## Usage
 1. Using Docker
@@ -75,6 +80,38 @@ server {
     proxy_pass $myservice;
   }
 }
+```
+
+3. Custom template
+
+By default it uses azure template for claims. To modify this:
+
+* Create new template file `touch /tmp/mytemplate.tmpl`
+* Mount file to the docker.
+* Set `GOAP_CUSTOM_TEMPLATE_PATH` to mounted location.
+
+Example:
+
+**.env**
+
+`GOAP_CUSTOM_TEMPLATE_PATH=/tmp/template.tmpl`
+
+**docker-compose.yml**
+
+```docker-compose.yml
+oidc_auth_proxy:
+  container_name: goap_auth
+  build:
+    target: builder
+  env_file:
+    - '.env'
+    - '.env-secret'
+  command: make run/oidc-auth-proxy
+  expose:
+    - 8080
+  volumes:
+    - ./:/app:cached
+    - ./custom_template_example.tmpl:/tmp/template.tmpl
 ```
 
 ## Testing

@@ -2,12 +2,14 @@ package handler
 
 import (
 	"context"
+	"log/slog"
 	"net/http"
 	"time"
 
 	gooidcproxy "github.com/alesbrelih/oidc-auth-proxy"
 	"github.com/alesbrelih/oidc-auth-proxy/internal/generated/oidc/api"
 	oidcPkg "github.com/alesbrelih/oidc-auth-proxy/internal/oidc"
+	"github.com/alesbrelih/oidc-auth-proxy/internal/packageerrors"
 	stringsPkg "github.com/alesbrelih/oidc-auth-proxy/internal/strings"
 	"github.com/alesbrelih/oidc-auth-proxy/internal/transform"
 )
@@ -38,23 +40,20 @@ type handler struct {
 }
 
 func (h *handler) OidcSignInGet(ctx context.Context) (*api.OidcSignInGetFound, error) {
-	signIn, err := h.oidcSvc.SignIn()
-	if err != nil {
-		return nil, err
-	}
+	signInRedirectionURL := h.oidcSvc.SignIn()
 
 	stateCookie := http.Cookie{
 		Name:  stateCookieName,
-		Value: signIn.State,
+		Value: signInRedirectionURL.State,
 	}
 
 	nonceCookie := http.Cookie{
 		Name:  nonceCookieName,
-		Value: signIn.Nonce,
+		Value: signInRedirectionURL.Nonce,
 	}
 
 	return &api.OidcSignInGetFound{
-		Location: api.NewOptString(signIn.Location),
+		Location: api.NewOptString(signInRedirectionURL.Location),
 		SetCookie: []string{
 			stateCookie.String(),
 			nonceCookie.String(),
@@ -83,6 +82,8 @@ func (h *handler) OidcAuthGet(ctx context.Context, params api.OidcAuthGetParams)
 
 	headerValue, err := h.transformerSvc.ClaimsHeader("keycloak", h.sessions[params.GoOidcAuthProxy.Value].IdTokenRaw)
 	if err != nil {
+		slog.Error("error creating header value: %s", err)
+
 		return nil, err
 	}
 
@@ -100,6 +101,8 @@ func (h *handler) OidcCallbackGet(ctx context.Context, params api.OidcCallbackGe
 
 	tokens, err := h.oidcSvc.Exchange(ctx, params.Code.Value)
 	if err != nil {
+		slog.Error("error exchanging token: %s", err)
+
 		return nil, err
 	}
 
@@ -130,10 +133,19 @@ func (*handler) NewError(ctx context.Context, err error) *api.ErrRespStatusCode 
 		return cast
 	}
 
+	if cast, ok := err.(*packageerrors.Error); ok {
+		return &api.ErrRespStatusCode{
+			StatusCode: cast.Code,
+			Response: api.ErrResp{
+				Error: api.NewOptString(cast.Message),
+			},
+		}
+	}
+
 	return &api.ErrRespStatusCode{
-		StatusCode: 500,
+		StatusCode: http.StatusInternalServerError,
 		Response: api.ErrResp{
-			Error: api.NewOptString(err.Error()),
+			Error: api.NewOptString(http.StatusText(http.StatusInternalServerError)),
 		},
 	}
 }

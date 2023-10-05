@@ -1,6 +1,6 @@
 module github.com/alesbrelih/oidc-auth-proxy
 
-go 1.21.1
+go 1.21
 
 require (
 	github.com/caarlos0/env/v9 v9.0.0
@@ -8,7 +8,7 @@ require (
 	github.com/go-faster/errors v0.6.1
 	github.com/go-faster/jx v1.1.0
 	github.com/golang-jwt/jwt/v5 v5.0.0
-	github.com/hashicorp/cap v0.4.0
+	github.com/google/uuid v1.3.1
 	github.com/ogen-go/ogen v0.76.0
 	github.com/stretchr/testify v1.8.4
 	go.opentelemetry.io/otel v1.19.0
@@ -27,7 +27,6 @@ require (
 	github.com/go-logr/logr v1.2.4 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
-	github.com/google/uuid v1.3.1 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.19 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
