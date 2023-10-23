@@ -1,7 +1,7 @@
 # github.com/caarlos0/env/v9 v9.0.0
 ## explicit; go 1.17
 github.com/caarlos0/env/v9
-# github.com/coreos/go-oidc/v3 v3.6.0
+# github.com/coreos/go-oidc/v3 v3.7.0
 ## explicit; go 1.19
 github.com/coreos/go-oidc/v3/oidc
 # github.com/davecgh/go-spew v1.1.1
@@ -128,9 +128,8 @@ golang.org/x/crypto/pbkdf2
 golang.org/x/exp/constraints
 golang.org/x/exp/maps
 golang.org/x/exp/slices
-# golang.org/x/net v0.16.0
+# golang.org/x/net v0.17.0
 ## explicit; go 1.17
-golang.org/x/net/context
 golang.org/x/net/http/httpguts
 golang.org/x/net/idna
 # golang.org/x/oauth2 v0.13.0
@@ -152,7 +151,7 @@ golang.org/x/text/transform
 golang.org/x/text/unicode/bidi
 golang.org/x/text/unicode/norm
 golang.org/x/text/unicode/rangetable
-# google.golang.org/appengine v1.6.7
+# google.golang.org/appengine v1.6.8
 ## explicit; go 1.11
 google.golang.org/appengine/internal
 google.golang.org/appengine/internal/base
